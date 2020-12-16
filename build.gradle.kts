@@ -1,11 +1,13 @@
-import net.minecrell.gradle.licenser.LicenseExtension
+import org.cadixdev.gradle.licenser.LicenseExtension
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("java")
-    id("net.minecrell.licenser") version "0.4.1"
+    id("org.cadixdev.licenser") version "0.5.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.3.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     kotlin("jvm") version "1.4.21"
 }
 
@@ -23,15 +25,27 @@ repositories {
         name = "Paper"
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
-    mavenCentral()
+    maven {
+        name = "bStats"
+        url = uri("https://repo.codemc.org/repository/maven-public")
+    }
 }
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT")
+    compileOnly("org.bstats:bstats-bukkit:1.7")
     implementation(kotlin("stdlib-jdk8"))
 }
 
-version = "1.0.0"
+version = "1.0.1"
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set(null as String?)
+    dependencies {
+        include(dependency("org.bstats:bstats-bukkit:1.7"))
+        relocate("org.bstats", "de.n0tmyfaultog.metrics")
+    }
+}
 
 configure<LicenseExtension> {
     header = rootProject.file("LICENSE-HEADER")
@@ -47,11 +61,17 @@ bukkit {
     description = "A solid plugin terminating your lag"
     version = rootProject.version.toString()
 }
+
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "11"
 }
+
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "11"
+}
+
+tasks.named("build").configure {
+    dependsOn("shadowJar")
 }

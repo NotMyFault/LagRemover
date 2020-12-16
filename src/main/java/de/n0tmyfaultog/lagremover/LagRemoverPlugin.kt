@@ -18,9 +18,14 @@
 package de.n0tmyfaultog.lagremover
 
 import org.bukkit.plugin.java.JavaPlugin
+import org.bstats.bukkit.Metrics
 
 class LagRemoverPlugin : JavaPlugin() {
+
+    private val BSTATS_ID = 9667
+
     override fun onEnable() {
+        val metrics = Metrics(this, BSTATS_ID)
         logger.info("LagRemover has started. Terminating the lag...")
     }
 
