@@ -1,6 +1,6 @@
 /*
  * LagRemover - A simple plugin for Bukkit servers removing the annoying lag.
- * Copyright (C) NotMyFault 2020
+ * Copyright (C) NotMyFault 2021
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
